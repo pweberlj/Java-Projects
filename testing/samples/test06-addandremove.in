@@ -1,0 +1,36 @@
+# Checks add method
+> init
+<<<
++ wug.txt wug.txt
+> add wug.txt
+<<<
+> commit "added wug"
+<<<
++ notwug.txt notwug.txt
+> add notwug.txt
+<<<
+> commit "added notwug"
+<<<
++ wug.txt wug2.txt
+> add wug.txt
+<<<
+> rm wug.txt
+<<<
++ cs.txt wug3.txt
+> add cs.txt
+<<<
+> commit "added cs"
+<<<
+>status
+=== Branches ===
+*master
+
+=== Staged Files ===
+
+=== Removed Files ===
+
+=== Modifications Not Staged For Commit ===
+
+=== Untracked Files ===
+
+<<<

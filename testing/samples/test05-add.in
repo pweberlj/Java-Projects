@@ -1,0 +1,11 @@
+# Checks add method
+> init
+<<<
++ wug.txt wug.txt
+> add wug.txt
+<<<
+> commit "added wug"
+<<<
+> add preston.txt
+#File does not exist.
+<<<

@@ -1,0 +1,21 @@
+> init
+<<<
+> branch branch
+<<<
++ wug.txt wug.txt
+> add wug.txt
+<<<
+> commit "Commit on master"
+<<<
+> checkout branch
+<<<
++ wug.txt notwug.txt
+> add wug.txt
+<<<
+> commit "Commit on branch"
+<<<
+> checkout master
+<<<
+> merge branch
+Encountered a merge conflict.
+<<<

@@ -1,0 +1,136 @@
+Gitlet Design Document
+----------------------
+By Preston Weber
+Last Updated 12/10/19
+
+Classes and Data Structures
+---------------------------
+(In order alphabetically)
+** Add **
+This class serves as my Add method, adding files to my staging folder within my repository.
+
+** Branch **
+This class serves as my Branch method, allowing the user to create new branches.
+private String _name: name of branch
+private boolean isHead: pointer to head branch
+private Commit _head: pointer to head commit
+
+** Checkout **
+This class serves as my Checkout methods, holding several methods that allow the user to checkout files to the current working directory.
+private static Repo _repo;
+private static String _fileName: the name of the file to checkout
+private static String _commitID: the commitID to checkout
+private static Commit _head: the head commit
+private static String _branchName: the name of the branch to checkout
+
+** Commands **
+An Organized list where my repository is first located, the method is invoked, and my repository is updated.
+private static Repo repo: the repository
+
+** Commit **
+This class serves as my Commit method, allowing the user to make either a commit with a single parent, or a group of parents via merge.
+private String _desc: the description of the commit
+private String timeStamp: the timestamp of the commit
+private String id: the unique commit ID
+private HashMap<String, String> _files: the file list
+private Commit _parent: the parent commit
+private ArrayList<Commit> _parents: Used for merged multiple parents
+private boolean _init: whether this is the initializing commit
+private ArrayList<String> _fileNames: the file names
+private File[] _fileList: the File file list
+
+** Find **
+Serves as my Find method, allowing the user to find a commit ID from a description.
+
+** GlobalLog **
+Serves as my Global-Log method, allowing the user to see all commits made to repo.
+
+** Log **
+Serves as my Log method, allowing the user to see all commits made to the repository starting at the head commit.
+
+** Main **
+The receiver of a command, parses it, and calls upon the correct command.
+
+** Merge **
+Serves as my Merge method, allowing the user to merge a given branch with the current head branch if possible.
+private String _givenCommitID: the commitID of the given branch/head commit
+private String _currentCommitID: the commitID of the head branch/head commit
+
+** Remove **
+Serves as my Remove method, allowing the user to remove files from the staging area if possible.
+
+** Repo **
+Serves as my repo, the centerboard of this project and where I will be practicing persistence by writing objects to my repo object within my .gitlet directory at the end of each command.
+private ArrayList<Branch> _branches: the branches array
+private ArrayList<String> _marked: the marked array, to not be added to the next commit
+private ArrayList<Commit> _commits: the array of current commits
+
+** Status **
+Serves as my Status method, allowing the user to see current branches, staged files, etc.
+
+
+Algorithms
+----------
+(In order alphabetically)
+** Add **
+1. Add(Repo repo, String file) The Add Class constructor
+
+** Branch **
+1. Branch(String name) Add a branch with String name
+2. getName() returns the name of the branch
+3. isHead() returns true if its the head branch
+4. setHead(boolean state) sets pointer of head branch to HEAD or NOT
+5. setHeadCommit(ArrayList<Commit> commits) sets the head commit to last commit in a array list of commits
+6. setHeadCommitTo(Commit commit) sets head commit directly to a commit
+7. getHeadCommit() returns the head commit
+
+** Checkout **
+1. process(String fileName, Repo repo) Takes the version of the file as it exists in the head commit, the front of the current branch, and puts it in the working directory, overwriting the version of the file that's already there if there is one.
+2. process(String fileName, String commitID, Repo repo) Takes the version of the file as it exists in the commit with the given id, and puts it in the working directory, overwriting the version of the file that's already there if there is one.
+3. processBranch(Repo repo, String branchName) Takes all files in the commit at the head of the given branch, and puts them in the working directory, overwriting the versions of the files that are already there if they exist.
+4. findBranch(Repo repo) Finds the branch from branch array list
+5. checkUntracked() Checks if a working file is untracked in the current branch and would be overwritten by the reset.
+6. reset(Repo repo, String commitID) Checks out all the files tracked by the given commit. Removes tracked files that are not present in that commit.Also moves the current branch's head to that commit node.
+
+** Commit **
+1. Commit(String desc, HashMap<String, String> files, ArrayList<String> fileNames, File[] fileList, boolean init, Commit parent, Repo repo) Commit constructor to make a new commit with only one parent.
+2. Commit(String desc, HashMap<String, String> files, ArrayList<String> fileNames, File[] fileList, boolean init, ArrayList<Commit> parents, Repo repo) Commit constructor to make a new commit with two parents via merge
+3. createUID() creates a unique commit ID for the commit
+4. makeCopy(ArrayList<String> theFiles) makes a copy of the files list to mess around with :p
+5. placeInCommitDir(String parentID, ArrayList<String> fileNames) places previous commits files in new directory
+
+** Find **
+1. Find(Repo repo, String commitMessage) Find constructor to find a Commit via its description
+
+** GlobalLog **
+1. GlobalLog(Repo repo) GlobalLog constructor to print out all commits ever made to the repository
+
+** Log **
+1. Log(Repo repo) Log constructor to print out all commits starting from head commit of current branch
+
+** Merge **
+1. Merge(Repo repo, String branchName) Merge constructor to merge files from the given branch to the current branch
+2. mergeHelperOne(HashMap<String, String> splitFiles, HashMap<String, String> currentCommitFiles, HashMap<String, String> givenCommitFiles, Repo repo) this helper function checks if the files were modified in the head commit of the head branch and given branch when compared to the split commit
+3. mergeHelperTwo(HashMap<String, String> splitFiles, HashMap<String, String> currentCommitFiles, HashMap<String, String> givenCommitFiles, Repo repo, String file) if the file is different between the two head commits, this method will set up a "merge conflict" commit to be created, the parent being the two branch commits we have been working with
+4. getSplitPoint(Repo repo, Branch head, String branchName) finds the best split point between the two branches
+
+** Remove **
+1. Remove(Repo repo, String fileName) Remove constructor to remove file from staging area
+
+** Repo **
+1. Repo() Repo constructor to create the repository which tracks branches, commits, and marks
+2. createBranch(String name) creates a new branch with a given name
+3. removeBranch(String name) removes a given branch with the provided name
+4. createCommit(String desc, HashMap<String, String> files, ArrayList<String> fileNames, File[] fileList, Commit parent, Repo repo, boolean init) creates a new commit with only one parent
+5. createCommit(String desc, HashMap<String, String> files, ArrayList<String> fileNames, File[] fileList, boolean init, ArrayList<Commit> parents, Repo repo) creates a new commit with two parents (merge)
+
+** Status **
+1. Status(Repo repo) Status constructor to initialize the status command
+
+Persistence
+-----------
+In order to save the state of the repository after each command calls, we will need to do the following:
+
+1) Before the command calls, retrieve our repository by invoking the Utils.readObject to our Repo.class to find our Repository.
+2) After making updates throughout our commands, serialize commits and files to store within the repository.
+3) To update our repository at the end of our command call, we will need to invoke the Utils.writeObject method upon our repo to update our repository.
