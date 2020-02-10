@@ -1,0 +1,33 @@
+> init
+<<<
+> branch branch
+<<<
++ wug.txt wug.txt
+> add wug.txt
+<<<
+> commit "added wug!"
+<<<
+> checkout branch
+<<<
++ wug.txt notwug.txt
+> add wug.txt
+<<<
+> commit "added wug!"
+<<<
+> checkout master
+<<<
+> status
+=== Branches ===
+*branch
+master
+
+=== Staged Files ===
+
+=== Removed Files ===
+
+=== Modifications Not Staged For Commit ===
+
+=== Untracked Files ===
+
+<<<
+
